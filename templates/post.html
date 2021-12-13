@@ -9,6 +9,7 @@
 </head>
 
 <body>
+<!--заголовок страницы-->
   <header class="container header">
     <div class="header__wrapper">
       <a href="/" class="header__btn-back">
@@ -16,65 +17,75 @@
           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#back"></use>
         </svg>
       </a>
-      <a href="/" class="header__logo-link">
+      <a href="/posts" class="header__logo-link">
         <svg class="header__logo" width="64" height="26">
           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#post"></use>
         </svg>
       </a>
     </div>
   </header>
+
+
   <main class="container">
     <section class="items">
       <div class="items__item item item--post">
+<!--имя пользователя, иконка и ссылка избранного-->
         <div class="item__top">
           <a href="/user-feed.html" class="item__head">
             <div class="item__ava-wrap">
-              <img src="/img/ava1.png" alt="" class="item__ava" width="47">
+              <img src={{post.poster_avatar}} alt="" class="item__ava" width="47">
             </div>
-            <span class="item__username">Username</span>
+            <span class="item__username">{{post.poster_name}}</span>
           </a>
           <button type="button" class="item__bookmark-btn">
-            <img src="/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
+            <img src="/static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
           </button>
         </div>
+
+<!--картинка поста        -->
         <a href="" class="item__post-link">
-          <img src="/img/post1.jpg" alt="" width="348" class="item__post-img">
+          <img src={{post.pic}} alt="" width="348" class="item__post-img">
         </a>
+
+<!--текст поста-->
         <div class="item__descr">
-          <p class="item__text">
-            Закрытые бутерброды пришли к&nbsp;нам из&nbsp;Англии. Вкусные и&nbsp;простые рецепты сэндвичей с&nbsp;фото позволят вам разнообразить завтраки и&nbsp;сделать перекусы более сытными! Они могут быть, как горячими, так и&nbsp;холодными.
-          </p>
-          <p class="item__text">
-            Итальянские закрытые сэндвичи называются панини. Для их&nbsp;приготовления берут чиабатту. В&nbsp;классическом рецепте используют традиционные итальянские продукты: помидоры, базилик, мацареллу.</p>
+          <p class="item__text">{{post.content}}</p>
         </div>
+
+
         <div class="item__bottom">
+
+<!--количество комментариев и просмотров-->
           <div class="item__post-info">
-            <p class="item__comments-counter">3 комментария</p>
+            {% for count in comments_cnt %}
+            {% if count.post_id == post.pk %}
+            <p class="item__comments-counter">комментариев: {{count.comments_count}}</p>
+            {% endif %}
+            {% endfor %}
             <div class="item__counter">
-              <img src="/img/eye.png" alt="" class="item__counter-icon" width="26">
-              <span class="item__counter-text">1023</span>
+              <img src="/static/img/eye.png" alt="" class="item__counter-icon" width="26">
+              <span class="item__counter-text">{{post.views_count}}</span>
             </div>
+<!--блок комментариев            -->
           </div>
           <div class="item__comments">
-            <p class="item__comment">
-              <b>user 1:</b> комментарий пользователя который его оставил
-            </p>
-            <p class="item__comment">
-              <b>user 2:</b> еще один комментарий
-            </p>
-            <p class="item__comment">
-              <b>user 3:</b> и&nbsp;какой-то коммент еще
-            </p>
+            {% for comment in comments %}
+            <p class="item__comment"><b>{{comment.commenter_name}}: </b>{{comment.comment}}</p>
+            {% endfor %}
           </div>
+
+<!--форма добавления комментариев          -->
           <form action="/" class="item__comment-form comment-form">
             <div class="comment-form__input-wrap">
-              <input type="search" class="comment-form__input" placeholder="Ваше имя">
+              <input type="search" class="comment-form__input" name="username" placeholder="Ваше имя">
             </div>
             <div class="comment-form__input-wrap">
-              <textarea class="comment-form__textarea" placeholder="Ваш комментарий" rows="6"></textarea>
+              <textarea class="comment-form__textarea" name="new_comment" placeholder="Ваш комментарий" rows="6"></textarea>
             </div>
             <button type="submit" class="comment-form__btn">Отправить</button>
           </form>
+
+
         </div>
       </div>
     </section>
