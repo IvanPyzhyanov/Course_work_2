@@ -22,19 +22,10 @@ def count_comments(data_file, comments_file):
     return count_com
 
 
-
-# data = read_json("data\data.json")
-# comments = read_json("data\comments.json")
-# count_posts = 0
-# count_com = []
-# for a in data:
-#     count = 0
-#     for b in comments:
-#         if b["post_id"] == a["pk"]:
-#             count += 1
-#     count_posts += 1
-#     count_com.append({"post_id": count_posts, "comments_count": count})
-
+def looking_by_word(data_file, s_words):
+    '''making function which looking for post which include searching`s words'''
+    post_by_word = [post for post in read_json(data_file) if s_words.lower() in post["content"].lower()]
+    return post_by_word
 
 
 

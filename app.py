@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, send_from_directory, json
 import os
 from pathlib import Path
-from functions import read_json, count_comments
+from functions import read_json, count_comments, looking_by_word
 
 app = Flask("Course work 2")
 
@@ -11,7 +11,11 @@ data = "data/data.json"
 
 @app.route("/")
 def main_page():
-    return render_template("index.html", data=read_json(data), comments_cnt=count_comments(data, data_comments))
+    posts_num = 0
+    for post in read_json(data):
+        if posts_num < post["pk"]:
+            posts_num = post["pk"]
+    return render_template("index.html", data=read_json(data), comments_cnt=count_comments(data, data_comments), num=posts_num)
 
 
 @app.route("/posts/<int:post_id>")
@@ -27,7 +31,12 @@ def post_page(post_id):
         return "", 400
 
 
-
+@app.route("/search/")
+def search_page():
+    s = request.args.get("words")
+    if s:
+        return render_template("search.html", data=looking_by_word(data, s)[0:10], search_count=len(looking_by_word(data, s)), comments_cnt=count_comments(data, data_comments))
+    return render_template("search.html")
 
 
 if __name__ == "__main__":
