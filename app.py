@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, send_from_directory, json
 import os
 from pathlib import Path
-from functions import read_json, count_comments, looking_by_word
+from functions import read_json, count_comments, looking_by_word, looking_by_username
 
 app = Flask("Course work 2")
 
@@ -25,8 +25,6 @@ def post_page(post_id):
             if post["pk"] == post_id:
                 comments_by_post = [comment for comment in read_json(data_comments) if post_id == comment["post_id"]]
                 return render_template("post.html", post=post, comments_cnt=count_comments(data, data_comments), comments=comments_by_post)
-            # else:
-            #     return "incorrect id", 400
     else:
         return "", 400
 
@@ -37,6 +35,14 @@ def search_page():
     if s:
         return render_template("search.html", data=looking_by_word(data, s)[0:10], search_count=len(looking_by_word(data, s)), comments_cnt=count_comments(data, data_comments))
     return render_template("search.html")
+
+
+@app.route("/users/<username>")
+def user_page(username):
+    if username:
+        return render_template("user-feed.html", data=looking_by_username(data, username), search_count=len(looking_by_username(data, username)), comments_cnt=count_comments(data, data_comments))
+    else:
+        return "", 400
 
 
 if __name__ == "__main__":

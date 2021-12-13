@@ -28,4 +28,10 @@ def looking_by_word(data_file, s_words):
     return post_by_word
 
 
+def looking_by_username(data_file, username):
+    '''making function which looking for post by username'''
+    post_by_username = [post for post in read_json(data_file) if username in post["poster_name"]]
+    return post_by_username
+
+
 
