@@ -29,7 +29,7 @@ def post_page(post_id):
         return "", 400
 
 
-@app.route("/search/")
+@app.route("/search/", methods=["GET"])
 def search_page():
     s = request.args.get("words")
     if s:
