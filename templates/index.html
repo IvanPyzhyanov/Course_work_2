@@ -51,7 +51,7 @@
           <img src={{post.pic}} alt="" width="348" class="item__post-img">
         </a>
 
-        <p class="item__descr">{{ post.content[0:30] }}...</p>
+        <p class="item__descr">{{post.content|safe}}...</p>
 
 <!--        блок подсчета комментариев-->
         <div class="item__post-info">

@@ -24,14 +24,45 @@ def count_comments(data_file, comments_file):
 
 def looking_by_word(data_file, s_words):
     '''making function which looking for post which include searching`s words'''
-    post_by_word = [post for post in read_json(data_file) if s_words.lower() in post["content"].lower()]
+    post_by_word = [post for post in posts_include_tags(data_file) if s_words.lower() in post["content"].lower()]
     return post_by_word
 
 
 def looking_by_username(data_file, username):
     '''making function which looking for post by username'''
-    post_by_username = [post for post in read_json(data_file) if username in post["poster_name"]]
+    post_by_username = [post for post in posts_include_tags(data_file) if username in post["poster_name"]]
     return post_by_username
+
+
+def making_tags(content):
+    words = content.split(" ")
+    for i, word in enumerate(words):
+        if word.startswith("#"):
+            tag = word.replace("#", "")
+            link = f"<a href='tag/{tag}>'>{word}</a>"
+            words[i] = link
+    return " ".join(words)
+
+
+def posts_include_tags(data_file):
+    posts = read_json(data_file)
+    for i, post in enumerate(posts):
+        post["content"] = making_tags(post["content"])
+    return posts
+
+
+# data = "data/data.json"
+# posts = read_json(data)
+# for i, post in enumerate(posts):
+#     print(i)
+#     print(post)
+#     post["content"] = making_tags(post["content"])
+# print(posts)
+
+# print(include_tags())
+
+
+
 
 
 

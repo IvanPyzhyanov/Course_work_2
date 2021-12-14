@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, send_from_directory, json
 import os
 from pathlib import Path
-from functions import read_json, count_comments, looking_by_word, looking_by_username
+from functions import read_json, count_comments, looking_by_word, looking_by_username, making_tags, posts_include_tags
 
 app = Flask("Course work 2")
 
@@ -15,13 +15,13 @@ def main_page():
     for post in read_json(data):
         if posts_num < post["pk"]:
             posts_num = post["pk"]
-    return render_template("index.html", data=read_json(data), comments_cnt=count_comments(data, data_comments), num=posts_num)
+    return render_template("index.html", data=posts_include_tags(data), comments_cnt=count_comments(data, data_comments), num=posts_num)
 
 
 @app.route("/posts/<int:post_id>")
 def post_page(post_id):
     if post_id:
-        for post in read_json(data):
+        for post in posts_include_tags(data):
             if post["pk"] == post_id:
                 comments_by_post = [comment for comment in read_json(data_comments) if post_id == comment["post_id"]]
                 return render_template("post.html", post=post, comments_cnt=count_comments(data, data_comments), comments=comments_by_post)
@@ -43,6 +43,12 @@ def user_page(username):
         return render_template("user-feed.html", data=looking_by_username(data, username), search_count=len(looking_by_username(data, username)), comments_cnt=count_comments(data, data_comments))
     else:
         return "", 400
+
+
+@app.route("/tag/<tag>")
+def tags_page(tag):
+    if tag:
+        return render_template("tag.html", data=posts_include_tags(data))
 
 
 if __name__ == "__main__":
