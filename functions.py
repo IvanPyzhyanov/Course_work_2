@@ -39,7 +39,10 @@ def making_tags(content):
     for i, word in enumerate(words):
         if word.startswith("#"):
             tag = word.replace("#", "")
-            link = f"<a href='tag/{tag}>'>{word}</a>"
+            tag = tag.replace("!", "")
+            tag = tag.replace(",", "")
+            tag = tag.replace(".", "")
+            link = f"<a href='tag/{tag}'>{word}</a>"
             words[i] = link
     return " ".join(words)
 
@@ -50,6 +53,10 @@ def posts_include_tags(data_file):
         post["content"] = making_tags(post["content"])
     return posts
 
+
+def looking_by_teg(data_file, tag):
+    post_by_tag = [post for post in posts_include_tags(data_file) if tag in post["content"]]
+    return post_by_tag
 
 # data = "data/data.json"
 # posts = read_json(data)

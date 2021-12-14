@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, send_from_directory, json
 import os
 from pathlib import Path
-from functions import read_json, count_comments, looking_by_word, looking_by_username, making_tags, posts_include_tags
+from functions import read_json, count_comments, looking_by_word, looking_by_username, making_tags, posts_include_tags, looking_by_teg
 
 app = Flask("Course work 2")
 
@@ -48,7 +48,7 @@ def user_page(username):
 @app.route("/tag/<tag>")
 def tags_page(tag):
     if tag:
-        return render_template("tag.html", data=posts_include_tags(data))
+        return render_template("tag.html", data=looking_by_teg(data, tag), tag=tag, comments_cnt=count_comments(data, data_comments))
 
 
 if __name__ == "__main__":
