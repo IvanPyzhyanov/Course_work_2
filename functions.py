@@ -53,7 +53,7 @@ def making_tags(content):
             tag = tag.replace("!", "")
             tag = tag.replace(",", "")
             tag = tag.replace(".", "")
-            link = f"<a href='tag/{tag}'>{word}</a>"
+            link = f"<a href='/tag/{tag}'>{word}</a>"
             words[i] = link
     return " ".join(words)
 
