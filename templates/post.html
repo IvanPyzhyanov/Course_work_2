@@ -37,9 +37,11 @@
             </div>
             <span class="item__username">{{post.poster_name}}</span>
           </a>
-          <button type="button" class="item__bookmark-btn">
-            <img src="/static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
-          </button>
+          <form action="/bookmarks/add/{{post.pk}}" method="get">
+            <button type="submit" class="item__bookmark-btn">
+              <img src="/static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
+            </button>
+          </form>
         </div>
 
 <!--картинка поста        -->
@@ -75,7 +77,7 @@
           </div>
 
 <!--форма добавления комментариев          -->
-          <form action="/" class="item__comment-form comment-form">
+          <form action="/posts/{{post.pk}}" class="item__comment-form comment-form" method="POST">
             <div class="comment-form__input-wrap">
               <input type="search" class="comment-form__input" name="username" placeholder="Ваше имя">
             </div>

@@ -22,6 +22,16 @@ def count_comments(data_file, comments_file):
     return count_com
 
 
+def add_comment(comments_file, post_num, name, new_comment):
+    '''making function which add new comment to post'''
+    with open(comments_file, "r", encoding="UTF-8") as file:
+        comments = json.load(file)
+    with open(comments_file, "w", encoding="UTF-8") as file:
+        comments.append({"post_id": post_num, "commenter_name": name, "comment": new_comment, "pk": (len(comments)+1)})
+        json.dump(comments, file, ensure_ascii=False, indent=4)
+    return "comment added"
+
+
 def looking_by_word(data_file, s_words):
     '''making function which looking for post which include searching`s words'''
     post_by_word = [post for post in posts_include_tags(data_file) if s_words.lower() in post["content"].lower()]
@@ -35,6 +45,7 @@ def looking_by_username(data_file, username):
 
 
 def making_tags(content):
+    '''making function which find words started on symbol "#" and change their to link'''
     words = content.split(" ")
     for i, word in enumerate(words):
         if word.startswith("#"):
@@ -48,6 +59,7 @@ def making_tags(content):
 
 
 def posts_include_tags(data_file):
+    '''making function which change content on content which includes links to tags'''
     posts = read_json(data_file)
     for i, post in enumerate(posts):
         post["content"] = making_tags(post["content"])
@@ -55,20 +67,36 @@ def posts_include_tags(data_file):
 
 
 def looking_by_teg(data_file, tag):
+    '''making function which looking for post by tag'''
     post_by_tag = [post for post in posts_include_tags(data_file) if tag in post["content"]]
     return post_by_tag
 
-# data = "data/data.json"
-# posts = read_json(data)
-# for i, post in enumerate(posts):
-#     print(i)
-#     print(post)
-#     post["content"] = making_tags(post["content"])
-# print(posts)
 
-# print(include_tags())
+def add_bookmark(data_file, book_file, post_num):
+    '''making function which add post to bookmarks page'''
+    for post in read_json(data_file):
+        if post_num == post["pk"]:
+            with open(book_file, "r", encoding="UTF-8") as file:
+                bookmarks = json.load(file)
+            for book in bookmarks:
+                if book["pk"]==post_num:
+                    return "already added"
+            with open(book_file, "w", encoding="UTF-8") as file:
+                bookmarks.append(post)
+                json.dump(bookmarks, file, ensure_ascii=False, indent=4)
+    return "added"
 
 
+def remove_bookmark(book_file, post_num):
+    '''making function which remove post from bookmarks page'''
+    for post in read_json(book_file):
+        if post_num == post["pk"]:
+            with open(book_file, "r", encoding="UTF-8") as file:
+                bookmarks = json.load(file)
+            with open(book_file, "w", encoding="UTF-8") as file:
+                bookmarks.remove(post)
+                json.dump(bookmarks, file, ensure_ascii=False, indent=4)
+    return "removed"
 
 
 

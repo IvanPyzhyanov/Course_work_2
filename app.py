@@ -1,7 +1,7 @@
-from flask import Flask, request, render_template, send_from_directory, json
+from flask import Flask, request, render_template, send_from_directory, json, redirect
 import os
 from pathlib import Path
-from functions import read_json, count_comments, looking_by_word, looking_by_username, making_tags, posts_include_tags, looking_by_teg
+from functions import read_json, count_comments, add_comment, looking_by_word, looking_by_username, making_tags, posts_include_tags, looking_by_teg, add_bookmark, remove_bookmark
 
 app = Flask("Course work 2")
 
@@ -11,11 +11,7 @@ data = "data/data.json"
 
 @app.route("/")
 def main_page():
-    posts_num = 0
-    for post in read_json(data):
-        if posts_num < post["pk"]:
-            posts_num = post["pk"]
-    return render_template("index.html", data=posts_include_tags(data), comments_cnt=count_comments(data, data_comments), num=posts_num)
+    return render_template("index.html", data=posts_include_tags(data), comments_cnt=count_comments(data, data_comments), num=len(read_json(data_bookmarks)))
 
 
 @app.route("/posts/<int:post_id>")
@@ -29,6 +25,17 @@ def post_page(post_id):
         return "", 400
 
 
+@app.route("/posts/<int:post_num>", methods=["POST"])
+def new_comment(post_num):
+    if post_num:
+        if request.method == "POST":
+            text = request.form.get("new_comment")
+            user = request.form.get("username")
+            if text and user:
+                add_comment(data_comments, post_num, user, text)
+    return redirect(f"/posts/{post_num}", code = 302)
+
+
 @app.route("/search/", methods=["GET"])
 def search_page():
     s = request.args.get("words")
@@ -40,7 +47,7 @@ def search_page():
 @app.route("/users/<username>")
 def user_page(username):
     if username:
-        return render_template("user-feed.html", data=looking_by_username(data, username), search_count=len(looking_by_username(data, username)), comments_cnt=count_comments(data, data_comments))
+        return render_template("user-feed.html", data=looking_by_username(data, username), search_count=len(looking_by_username(data, username)), comments_cnt=count_comments(data, data_comments), username=username)
     else:
         return "", 400
 
@@ -49,6 +56,25 @@ def user_page(username):
 def tags_page(tag):
     if tag:
         return render_template("tag.html", data=looking_by_teg(data, tag), tag=tag, comments_cnt=count_comments(data, data_comments))
+
+
+@app.route("/bookmarks/add/<int:post_id>")
+def add_to_bookmarks(post_id):
+    if post_id:
+        add_bookmark(data, data_bookmarks, post_id)
+    return redirect("/", code = 302)
+
+
+@app.route("/bookmarks/remove/<int:post_id>")
+def remove_from_bookmarks(post_id):
+    if post_id:
+        remove_bookmark(data_bookmarks, post_id)
+    return redirect("/bookmarks", code = 302)
+
+
+@app.route("/bookmarks")
+def bookmarks_page():
+    return render_template("bookmarks.html", data=posts_include_tags(data_bookmarks), comments_cnt=count_comments(data_bookmarks, data_comments))
 
 
 if __name__ == "__main__":
